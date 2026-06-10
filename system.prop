@@ -1,0 +1,6 @@
+# FOD overrides for Xiaomi Redmi Note 14 Pro 4G (obsidian)
+persist.sys.phh.fod.xiaomi=true
+persist.sys.phh.nodim=true
+persist.sys.phh.fod_color=ffffff
+ro.hardware.fp.fod=true
+ro.hardware.fp.fod.location=low
