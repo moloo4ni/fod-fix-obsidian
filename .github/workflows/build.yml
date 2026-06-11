@@ -1,4 +1,4 @@
-name: Build & Release
+name: Build and Release Magisk Module
 
 on:
   push:
@@ -7,17 +7,24 @@ on:
 
 jobs:
   build:
+    name: Build Module
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
-      - name: Pack Magisk module
+      - name: Build Module
         run: |
           zip -r "FODFixObsidian-${GITHUB_REF_NAME#v}.zip" \
             module.prop service.sh system.prop customize.sh daemon.sh uninstall.sh
 
-      - name: Create release
+      - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
           files: FODFixObsidian-*.zip
-          generate_release_notes: true
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
