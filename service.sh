@@ -1,3 +1,4 @@
+#!/system/bin/sh
 MODDIR=${0%/*}
 
 # Phase 1 — apply system properties
