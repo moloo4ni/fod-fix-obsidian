@@ -31,7 +31,7 @@ Magisk / KernelSU / APatch module that fixes the Under-Display Fingerprint Senso
 ```bash
 git clone https://github.com/moloo4ni/fod-fix-obsidian.git
 cd fod-fix-obsidian
-zip -r FODFixObsidian-1.0.zip module.prop service.sh system.prop customize.sh uninstall.sh
+zip -r FODFixObsidian-1.0.zip module.prop service.sh system.prop customize.sh daemon.sh uninstall.sh
 ```
 
 The resulting `.zip` can be flashed directly on the device.
