@@ -40,6 +40,12 @@ The resulting `.zip` can be flashed directly on the device.
 
 Pushing a tag starting with `v` (e.g., `v1.0`) triggers [GitHub Actions](.github/workflows/build.yml) to build the zip and publish a release.
 
+## Known limitations
+
+- **Daemon persistence (KernelSU):** On some KernelSU versions the polling daemon does not survive after `service.sh` exits, even with `nohup`/`setsid`. The display properties are still applied and sysfs permissions are set, but backlight boosting and LHBM only work while the daemon runs.
+- **odm-fp-daemon "fingerprint is idle":** The Jiiov ANC HAL (`odm-fp-daemon`) skips its own LHBM enable with `"fingerprint is idle"` during GSI enrollment. This is a HAL-level state machine issue that a shell module cannot fix — a custom kernel or HAL patch may be required.
+- **Phh GSI FOD integration:** The `persist.sys.phh.fod.xiaomi` property may not fully bridge the GSI framework with the proprietary Jiiov ANC HAL on this Mediatek device.
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
