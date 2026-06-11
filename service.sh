@@ -78,5 +78,6 @@ for dev in /dev/*fp* /dev/*fingerprint* /dev/*jiiov* /dev/*anc* /dev/xiaomi-touc
     fi
 done
 
-# Phase 4 — launch persistent polling daemon (separate file avoids quoting issues)
-nohup /system/bin/sh "$MODDIR/daemon.sh" >/dev/null 2>&1 &
+# Phase 4 — launch persistent polling daemon (setsid creates new session
+# so KSU can't kill it when service.sh's process group is reaped)
+setsid /system/bin/sh "$MODDIR/daemon.sh" >/dev/null 2>&1 &
