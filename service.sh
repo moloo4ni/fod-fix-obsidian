@@ -152,16 +152,17 @@ done
             if [ "$current_state" != "$last_state" ]; then
                 if [ "$current_state" = "1" ]; then
                     orig_brightness=$(cat "$BRIGHTNESS_NODE" 2>/dev/null)
-                    # Re-read max_brightness each finger-down in case panel wasn't ready
                     if [ -n "$MAX_BRIGHTNESS_NODE" ]; then
                         max_brightness=$(cat "$MAX_BRIGHTNESS_NODE" 2>/dev/null)
                     fi
                     if [ -n "$max_brightness" ]; then
                         echo "$max_brightness" > "$BRIGHTNESS_NODE" 2>/dev/null
                     fi
-                    echo "9" > "$DISP_PARAM" 2>/dev/null
+                    echo "09 1" > "$DISP_PARAM" 2>/dev/null
+                    echo "02 1" > "$DISP_PARAM" 2>/dev/null
                 elif [ "$current_state" = "0" ]; then
-                    echo "0" > "$DISP_PARAM" 2>/dev/null
+                    echo "09 0" > "$DISP_PARAM" 2>/dev/null
+                    echo "02 0" > "$DISP_PARAM" 2>/dev/null
                     if [ -n "$orig_brightness" ]; then
                         echo "$orig_brightness" > "$BRIGHTNESS_NODE" 2>/dev/null
                     fi
