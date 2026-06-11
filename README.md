@@ -12,8 +12,6 @@
 
 Magisk / KernelSU / APatch module that enables the Under-Display Fingerprint Sensor (FOD) on **Redmi Note 14 Pro 4G** (codename `obsidian`) running LineageOS 23.0 GSI (Android 16) or other Android 16+ Treble GSI-based ROMs.
 
-Source code and pre-built releases: [github.com/moloo4ni/fod-fix-obsidian](https://github.com/moloo4ni/fod-fix-obsidian)
-
 ### Features
 
 - **Low-Latency Polling Daemon** -- Background daemon polls `fod_press_status` every 20 ms and instantly triggers Local HBM (High Brightness Mode) via the `disp_param` sysfs interface.
@@ -66,8 +64,6 @@ This project is licensed under the GNU General Public License v3.0 -- see the [L
 ## Русский
 
 Magisk / KernelSU / APatch-модуль для включения подэкранного сканера отпечатков (FOD) на **Redmi Note 14 Pro 4G** (кодовое имя `obsidian`) под GSI-прошивками на базе LineageOS 23.0 (Android 16) и других Android 16+ Treble GSI.
-
-Исходный код и готовые сборки: [github.com/moloo4ni/fod-fix-obsidian](https://github.com/moloo4ni/fod-fix-obsidian)
 
 ### Возможности
 
