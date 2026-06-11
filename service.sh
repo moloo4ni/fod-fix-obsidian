@@ -85,8 +85,9 @@ for dev in /dev/*fp* /dev/*fingerprint* /dev/*jiiov* /dev/*anc* /dev/xiaomi-touc
     fi
 done
 
-# High-speed FOD Daemon Bridge with 20ms Non-Buffered Polling (9 ON / 0 OFF)
-(
+# High-speed FOD Daemon Bridge with 20ms Non-Buffered Polling (09 ON / 00 OFF)
+# Must use nohup + disown to survive KernelSU parent process cleanup
+nohup /system/bin/sh -c '
     last_state="-1"
     orig_brightness=""
     
@@ -158,11 +159,17 @@ done
                     if [ -n "$max_brightness" ]; then
                         echo "$max_brightness" > "$BRIGHTNESS_NODE" 2>/dev/null
                     fi
-                    echo "09 1" > "$DISP_PARAM" 2>/dev/null
+                    if [ -n "$max_brightness" ]; then
+                        echo "04 $max_brightness" > "$DISP_PARAM" 2>/dev/null
+                    fi
+                    echo "05 1" > "$DISP_PARAM" 2>/dev/null
                     echo "02 1" > "$DISP_PARAM" 2>/dev/null
+                    echo "09 1" > "$DISP_PARAM" 2>/dev/null
                 elif [ "$current_state" = "0" ]; then
-                    echo "09 0" > "$DISP_PARAM" 2>/dev/null
+                    echo "05 0" > "$DISP_PARAM" 2>/dev/null
                     echo "02 0" > "$DISP_PARAM" 2>/dev/null
+                    echo "09 0" > "$DISP_PARAM" 2>/dev/null
+                    echo "04 0" > "$DISP_PARAM" 2>/dev/null
                     if [ -n "$orig_brightness" ]; then
                         echo "$orig_brightness" > "$BRIGHTNESS_NODE" 2>/dev/null
                     fi
@@ -172,4 +179,5 @@ done
             sleep 0.02
         done
     fi
-) &
+' > /dev/null 2>&1 &
+disown
