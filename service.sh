@@ -47,10 +47,6 @@ done
 mount -o remount,ro /mnt/vendor/persist 2>/dev/null
 mount -o remount,ro /persist 2>/dev/null
 
-# Force-disable and uninstall old overlay package to clear GSI overlay manager cache
-cmd overlay disable com.moloo4ni.obsidian.fod.overlay 2>/dev/null
-pm uninstall com.moloo4ni.obsidian.fod.overlay 2>/dev/null
-
 # Dynamic LHBM & allow_tx permissions bypass
 find /sys/ -name "*lhbm*" -o -name "*allow_tx*" 2>/dev/null | while read -r node; do
     if [ -f "$node" ]; then
