@@ -138,19 +138,33 @@ done
     done
 
     if [ -n "$FOD_STATUS" ] && [ -n "$DISP_PARAM" ] && [ -n "$BRIGHTNESS_NODE" ]; then
-        max_brightness=$(cat "$MAX_BRIGHTNESS_NODE" 2>/dev/null)
+        # Wait for panel brightness node to be ready (avoids race on early boot)
+        if [ -n "$MAX_BRIGHTNESS_NODE" ]; then
+            max_brightness=""
+            _wait=0
+            while [ $_wait -lt 50 ]; do
+                max_brightness=$(cat "$MAX_BRIGHTNESS_NODE" 2>/dev/null)
+                if [ -n "$max_brightness" ] && [ "$max_brightness" -gt 0 ] 2>/dev/null; then
+                    break
+                fi
+                _wait=$((_wait + 1))
+                sleep 0.1
+            done
+        fi
         while true; do
             current_state=$(cat "$FOD_STATUS" 2>/dev/null)
             if [ "$current_state" != "$last_state" ]; then
                 if [ "$current_state" = "1" ]; then
-                    # Finger Down - save user brightness, force max panel output, activate LHBM via '9'
                     orig_brightness=$(cat "$BRIGHTNESS_NODE" 2>/dev/null)
+                    # Re-read max_brightness each finger-down in case panel wasn't ready
+                    if [ -n "$MAX_BRIGHTNESS_NODE" ]; then
+                        max_brightness=$(cat "$MAX_BRIGHTNESS_NODE" 2>/dev/null)
+                    fi
                     if [ -n "$max_brightness" ]; then
                         echo "$max_brightness" > "$BRIGHTNESS_NODE" 2>/dev/null
                     fi
                     echo "9" > "$DISP_PARAM" 2>/dev/null
                 elif [ "$current_state" = "0" ]; then
-                    # Finger Up - deactivate LHBM via '0' and restore user brightness
                     echo "0" > "$DISP_PARAM" 2>/dev/null
                     if [ -n "$orig_brightness" ]; then
                         echo "$orig_brightness" > "$BRIGHTNESS_NODE" 2>/dev/null
