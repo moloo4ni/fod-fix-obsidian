@@ -1,39 +1,44 @@
-# Redmi Note 14 Pro 4G (obsidian) GSI Under-Display Fingerprint (FOD) Fix
+# Redmi Note 14 Pro 4G (obsidian) — GSI FOD Fix Magisk Module
 
-This repository contains a Magisk / KernelSU / APatch module that corrects the Under-Display Fingerprint Sensor (FOD) registration, backlight synchronization, and calibration path blocks specifically for the Redmi Note 14 Pro 4G (codename: obsidian) running LineageOS 23.0 GSI or other Android 13+ GSIs.
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+
+Magisk / KernelSU / APatch module that fixes the Under-Display Fingerprint Sensor (FOD) on **Redmi Note 14 Pro 4G** (codename: `obsidian`) running LineageOS 23.0 GSI or other Android 15+ Treble GSI-based ROMs.
 
 ## Features
 
-- **Dynamic Persist Alignment:** Automatically remounts the `/persist` partition at boot as read-write to verify, restore, and set appropriate secure system ownership and permission matrices (`system:system`, `0660`) on Jiiov/ANC calibration files.
-- **Low-Latency Polling Daemon:** Includes a background polling daemon checking the touch panel event state (`fod_press_status`) every 20ms to coordinate instant local High Brightness Mode (HBM) trigger offsets.
-- **Dynamic Backlight Boosting:** Reads the hardware panel's maximum factory brightness ceiling and dynamically boosts global backlight parameters during active touch inputs, preserving previous screen brightness states upon finger release.
-- **SELinux Enforcing Compatibility:** Configures security contexts and broad system-level character device permissions (`0666`) to ensure the sandboxed Jiiov HAL can open `/dev/xiaomi-fp` without policy conflicts under enforcing kernels.
-- **Phh GSI Integration:** Sets essential framework properties to align SystemUI-drawn scanner coordinates with the physical position of the low-mount optical sensor under the glass.
+- **Dynamic Persist Alignment** — Remounts `/persist` as rw at boot, restores Jiiov calibration from `.bak` if the active bin is missing, and sets secure ownership/permissions (`system:system`, `0660`).
+- **Low-Latency Polling Daemon** — Background daemon polls `fod_press_status` every 20ms to trigger instant Local HBM (High Brightness Mode) via disp_param.
+- **Dynamic Backlight Boosting** — Reads the panel's factory max brightness ceiling and boosts backlight during fingerprint scans, restoring the previous level on finger release.
+- **SELinux Enforcing Compatibility** — Sets world-readable/writable permissions (`0666`) on `/dev/*fp*`, `/dev/*jiiov*`, and relevant sysfs nodes so the Jiiov HAL can work under enforcing policy.
+- **Phh GSI Integration** — Sets `persist.sys.phh.fod.*` and `ro.hardware.fp.fod.*` properties to align the scanner UI with the physical low-mount sensor.
+- **sysfs Permission Hardening** — Unlocks `/sys/class/lcd/`, `/sys/class/mi_display/`, and `/sys/class/touch/` nodes so the GSI framework can control backlight and HBM without SELinux denials.
+
+## Prerequisites
+
+- Device: Redmi Note 14 Pro 4G (`obsidian`)
+- ROM: Any Android 15+ GSI with phh-Treble support (LineageOS 23.0+ based GSIs)
+- Root: Magisk (24+), KernelSU, or APatch
 
 ## Installation
 
-1. Go to the **Releases** section of this repository and download the latest zip archive.
-2. Flash the zip file using Magisk, KernelSU, or APatch.
-3. Open the **Phh Treble Settings** app on your device, navigate to **Xiaomi features**, and ensure that **FOD** options are active. (Note: The GSI may automatically hide global automatic brightness controls during active scanner operations to prevent optical calibration fluctuations).
-4. Reboot your device to apply the changes cleanly.
+1. Download the latest `.zip` from the [Releases](https://github.com/moloo4ni/fod-fix-obsidian/releases) page.
+2. Flash the archive in Magisk / KernelSU / APatch manager.
+3. Open **Phh Treble Settings** → **Xiaomi features** → enable **FOD** options.
+4. Reboot.
 
 ## Local Building
 
-You can easily pack the repository files into a flashable Magisk zip module using standard command-line tools.
-
-### Packaging
-
-To manually create a flashable zip package of this module, execute the following command in the root directory of the repository:
-
 ```bash
+git clone https://github.com/moloo4ni/fod-fix-obsidian.git
+cd fod-fix-obsidian
 zip -r FODFixObsidian-1.0.zip module.prop service.sh system.prop
 ```
 
-The resulting zip archive can be immediately transferred to your device and flashed.
+The resulting `.zip` can be flashed directly on the device.
 
 ## CI/CD
 
-This repository is configured with GitHub Actions. Pushing a tag starting with `v` (e.g., `v1.0`) will automatically trigger the build pipeline, package the flashable zip archive, and publish a new GitHub Release.
+Pushing a tag starting with `v` (e.g., `v1.0`) triggers [GitHub Actions](.github/workflows/build.yml) to build the zip and publish a release.
 
 ## License
 
